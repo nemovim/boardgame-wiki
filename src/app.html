@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>NemoWiki</title>
+		<meta name="description" content="A demo wiki website powered by SvelteKit and NemoWiki." />
+		<meta name="author" content="nemovim" />
+		<meta name="keywords" content="wiki, svelte, sveltekit, nemowiki, nemovim" />
+
+		<link
+			rel="preload"
+			href="/fonts/nanum-gothic-400.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="preload"
+			href="/fonts/nanum-gothic-700.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
+
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Google tag (gtag.js) -->
+		<!-- <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-KFYL5N7J21"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-KFYL5N7J21');
+        </script> -->
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

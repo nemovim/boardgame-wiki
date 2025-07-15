@@ -1,0 +1,87 @@
+* {
+	// font-family: 'NanumBarunpen';
+	font-family: 'NanumGothic', '맑은고딕';
+	padding: 0;
+	margin: 0;
+	line-height: 1.4;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 16px;
+	background-color: white;
+	// letter-spacing: 0.0rem;
+}
+
+@media (max-width: 1200px) {
+	html {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 800px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+@media (max-width: 600px) {
+	html {
+		font-size: 10px;
+	}
+}
+
+body {
+	background-color: var(--color-gray-2);
+}
+
+a {
+	text-decoration-line: none;
+	color: var(--color-primary-1);
+}
+
+a:hover {
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 0.2rem;
+	text-decoration-thickness: 0.05rem;
+}
+
+s {
+	color: gray;
+	text-decoration-thickness: 0.05rem;
+}
+
+s:hover {
+	text-decoration: none;
+}
+
+u {
+	text-underline-offset: 0.2rem;
+	text-decoration-thickness: 0.05rem;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+th,
+td {
+	border: solid gray 0.05rem;
+	background-color: var(--color-gray-3);
+}
+
+button,
+label.button {
+	padding: 0.25rem 0.75rem;
+	border: solid gray 0.05rem;
+	background-color: white;
+	font-size: 1rem;
+	font-weight: bold;
+}
+
+button:hover,
+label.button:hover {
+	cursor: pointer;
+	background-color: var(--color-gray-2);
+}

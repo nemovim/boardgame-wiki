@@ -1,0 +1,19 @@
+header {
+	position: relative;
+	padding: 0.5rem;
+	right: 0rem;
+	width: stretch;
+	background-color: white;
+	top: 0rem;
+	border-bottom: 0.15rem solid black;
+
+	a {
+		font-size: 1.6rem;
+		margin-top: 0.4rem;
+		margin-left: 0.6rem;
+	}
+
+	a:hover {
+		text-decoration: none;
+	}
+}

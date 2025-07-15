@@ -1,0 +1,15 @@
+header {
+	display: flex;
+	align-items: flex-start;
+	padding: 1rem;
+	justify-content: space-between;
+	min-width: 100%;
+
+	div {
+		width: 60%;
+	}
+}
+
+h1 {
+	font-size: 2.5rem;
+}
