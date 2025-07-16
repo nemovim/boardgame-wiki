@@ -41,15 +41,11 @@
 <section class="module">
 	<h3>수정된 문서</h3>
 	<hr />
-	{#if !page.data.user}
-		<p>로그인 필요</p>
-	{:else}
-		{#each recentChangedLogs as log, i (i)}
-			{#if i <= 10}
-				{@render RecentLog(log)}
-			{/if}
-		{/each}
-	{/if}
+	{#each recentChangedLogs as log, i (i)}
+		{#if i <= 10}
+			{@render RecentLog(log)}
+		{/if}
+	{/each}
 </section>
 
 <style lang="scss">

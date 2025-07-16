@@ -38,13 +38,16 @@
 } */
 
 :root {
-	--color-primary-1: rgb(100, 50, 250);
-	--color-primary-2: rgb(50, 100, 200);
-	--color-primary-3: rgb(100, 200, 250);
+	--color-primary-0: rgb(170, 75, 0);
+	--color-primary-1: rgb(150, 75, 0);
+	--color-primary-2: rgb(240, 210, 190);
+	--color-primary-3: rgb(240, 225, 205);
+	--color-primary-4: rgb(255, 245, 230);
+	--color-primary-5: rgb(255, 252, 243);
 	--color-error: rgb(255, 50, 50);
-	--color-error-back: rgb(255, 240, 240);
-	--color-error-hover: rgb(255, 220, 220);
-	--color-warn: rgb(255, 200, 50);
+	--color-error-back: rgb(255, 235, 225);
+	--color-error-hover: rgb(255, 220, 210);
+	--color-warn: rgb(235, 170, 30);
 	--color-warn-back: rgb(255, 245, 220);
 	--color-success: rgb(50, 255, 50);
 	--color-success-back: rgb(245, 255, 245);

@@ -1,8 +1,3 @@
-hr {
-	margin: 0.25rem 0;
-	border: gray 0.05em solid;
-}
-
 section {
 	margin-left: 0;
 	min-width: 15vw;
@@ -28,8 +23,15 @@ h2 {
 	margin-bottom: 0.5rem;
 }
 
+#login-btn {
+	// border: none;
+	padding: 0.25rem;
+	margin-top: 0.5rem;
+	width: stretch;
+}
+
 #logout-btn {
-	border: none;
+	// border: none;
 	padding: 0.25rem;
 	margin-top: 0.5rem;
 	width: stretch;

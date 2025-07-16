@@ -46,11 +46,12 @@
 	div {
 		display: flex;
 		justify-content: center;
+		flex: 1;
 	}
 
 	main {
 		padding: 1rem 2rem;
-		max-width: 55rem;
+		max-width: 50rem;
 		width: stretch;
 		height: stretch;
 	}

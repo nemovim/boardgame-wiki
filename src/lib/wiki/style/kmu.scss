@@ -2,7 +2,7 @@
 	margin-top: 1em;
 	margin-bottom: 0.5em;
 	font-weight: 600;
-	border-bottom: 0.05em rgb(230, 230, 230) solid;
+	border-bottom: 0.05em var(--color-primary-0) solid;
 }
 
 .kmu :global {
@@ -117,8 +117,8 @@
 	}
 
 	hr {
-		border: gray 0.05em solid;
-		margin-bottom: 0.5rem;
+		border: var(--color-primary-0) 0.05em solid;
+		margin-bottom: 0.5em;
 	}
 
 	img {
@@ -127,7 +127,7 @@
 
 	th,
 	td {
-		border: solid 0.08em gray;
+		border: solid 0.08em var(--color-primary-1);
 		padding: 0.6em 1.2em;
 	}
 
@@ -144,11 +144,11 @@
 	}
 
 	#content-footnote {
-		margin: 0.5rem 0;
+		margin: 0.5em 0;
 	}
 
 	#index {
-		border: 0.05em solid gray;
+		border: 0.05em solid var(--color-primary-1);
 		width: fit-content;
 		padding: 0.8em 0.8em 0.5em 0.8em;
 		margin: 1em 0em;
@@ -164,17 +164,18 @@
 
 	[id^='popup-'] {
 		position: absolute;
-		background-color: white;
-		border: solid black 0.1rem;
-		padding: 0.3rem 0.4rem 0.1rem 0.4rem;
+		background-color: var(--color-primary-4);
+		border: solid var(--color-primary-1) 0.1em;
+		padding: 0.5em 0.75em 0.5em 0.75em;
 		z-index: 999;
 		line-height: 1.2;
 		word-break: keep-all;
 		white-space: nowrap;
-		top: -2.2rem;
+		top: -3em;
 		left: 0;
 		display: flex;
 		width: fit-content;
 		color: black;
+		border-radius: 0.5em;
 	}
 }

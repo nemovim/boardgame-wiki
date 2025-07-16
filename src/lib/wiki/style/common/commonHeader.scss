@@ -7,9 +7,15 @@ header {
 
 	div {
 		width: 60%;
+		position: relative;
 	}
 }
 
 h1 {
 	font-size: 2.5rem;
+}
+
+#doc-description {
+	position: relative;
+	top: -0.25rem;
 }

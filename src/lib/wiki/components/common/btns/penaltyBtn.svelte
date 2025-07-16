@@ -6,5 +6,5 @@
 </script>
 
 {#if ['dev', 'manager'].includes(userGroup)}
-	<CommonBtn btnName="경고 및 차단" pageName="penalty" />
+	<CommonBtn btnName="제재" pageName="penalty" />
 {/if}

@@ -3,15 +3,17 @@ footer {
 	right: 0rem;
 	bottom: 0rem;
 
+	margin-top: 1rem;
+
 	display: flex;
 	justify-content: flex-end;
 	width: stretch;
 
-	background-color: white;
-	border-top: 0.15rem solid black;
+	background-color: var(--color-primary-1);
+	box-shadow: 0 -0.25rem 0.25rem rgba(0, 0, 0, 0.1);
 
 	p {
-		color: gray;
+		color: var(--color-primary-3);
 		font-size: 0.75rem;
 		margin: 0.5rem;
 	}

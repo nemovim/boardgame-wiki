@@ -11,7 +11,7 @@
 {/snippet}
 
 {#snippet TitleInput()}
-	<input id="title-input" placeholder="title" name="title" />
+	<input id="title-input" placeholder="파일 문서의 제목을 입력해 주세요." name="title" />
 {/snippet}
 
 {#snippet ContentTextarea()}
@@ -21,7 +21,7 @@
 {/snippet}
 
 {#snippet CommentInput()}
-	<input id="comment-input" placeholder="comment" name="comment" />
+	<input id="comment-input" placeholder="간단한 설명을 입력해 주세요." name="comment" />
 {/snippet}
 
 <CommonForm formName="file-form" isFile>

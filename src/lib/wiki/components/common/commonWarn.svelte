@@ -3,7 +3,7 @@
 </script>
 
 {#if children}
-	<p>{@render children()}</p>
+	<p><span>[주의]</span> {@render children()}</p>
 {/if}
 
 <style lang="scss">

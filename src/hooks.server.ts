@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/sveltekit';
 import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
 
-import { redirect, error } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { WIKI_MONGO_URI, AWS_BUCKET_NAME, AWS_ID, AWS_SECRET } from '$env/static/private';
@@ -54,20 +54,15 @@ const authorizationHandle: Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 
 	// console.log(`url: ${event.url.pathname} | session: ${!!session?.user}`)
+	event.params.fullTitle = (event.params.fullTitle || '').trim();
+	event.params.userName = (event.params.userName || '').trim();
+	event.params.query = (event.params.query || '').trim();
+
+	if (!event.params.fullTitle && !event.params.userName && !event.params.query) {
+		if (!event.url.pathname.startsWith('/f')) redirect(302, '/r/' + encodeFullTitle('위키:대문'));
+	}
 
 	if (session?.user?.email) {
-		// Authorized
-		if (event.url.pathname.startsWith('/signin'))
-			redirect(302, '/r/' + encodeFullTitle('위키:대문'));
-		if (!event.params.fullTitle && !event.params.userName && !event.params.query) {
-			if (!event.url.pathname.startsWith('/api') && !event.url.pathname.startsWith('/f'))
-				redirect(302, '/r/' + encodeFullTitle('위키:대문'));
-		}
-
-		event.params.fullTitle = (event.params.fullTitle || '').trim();
-		event.params.userName = (event.params.userName || '').trim();
-		event.params.query = (event.params.query || '').trim();
-
 		let user: User | null = await getUserByEmail(session.user.email);
 		if (user === null) {
 			const res = await signupUserByEmailAndName(
@@ -84,15 +79,11 @@ const authorizationHandle: Handle = async ({ event, resolve }) => {
 		return await resolve(event);
 	} else {
 		// Unauthorized
-		if (event.url.pathname.startsWith('/api')) {
-			error(401, {
-				message: 'Unauthorized'
-			});
-		} else if (event.url.pathname.startsWith('/signin')) {
-			return await resolve(event);
-		} else {
-			redirect(303, '/signin');
-		}
+		const user = { email: null, name: null, group: 'guest', contribCnt: 0 };
+		event.locals.user = user;
+
+		// console.log(user);
+		return await resolve(event);
 	}
 };
 

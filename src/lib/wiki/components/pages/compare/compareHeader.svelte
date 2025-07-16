@@ -2,7 +2,6 @@
 	import DocHeader from '$lib/wiki/components/common/headers/docHeader.svelte';
 	import WriteBtn from '$lib/wiki/components/common/btns/writeBtn.svelte';
 	import BacklinkBtn from '$lib/wiki/components/common/btns/backlinkBtn.svelte';
-	import AuthorityBtn from '$lib/wiki/components/common/btns/authorityBtn.svelte';
 	import ReadBtn from '$lib/wiki/components/common/btns/readBtn.svelte';
 	import HistoryBtn from '$lib/wiki/components/common/btns/historyBtn.svelte';
 
@@ -16,7 +15,6 @@
 	<WriteBtn />
 	<HistoryBtn />
 	<BacklinkBtn />
-	<AuthorityBtn />
 {/snippet}
 
 <DocHeader {description} {Btns} />

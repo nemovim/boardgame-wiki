@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { signOut } from '@auth/sveltekit/client';
+	import { signIn, signOut } from '@auth/sveltekit/client';
 	import type { User } from '@nemowiki/core/types';
 	import { encodeFullTitle } from '@nemowiki/core/client';
 	import LogOut from '@lucide/svelte/icons/log-out';
+	import LogIn from '@lucide/svelte/icons/log-in';
 
-	let user: User | null = $derived(JSON.parse(page.data.user || null));
+	let user: User = $derived(JSON.parse(page.data.user));
 </script>
 
 {#snippet GuestProfile()}
-	<h2>GUEST</h2>
+	<h2>비회원</h2>
 	<hr />
-	<p>로그인 필요</p>
+	<button id="login-btn" class="container" onclick={() => signIn('google')}>
+		<LogIn size="1rem" color="var(--color-primary-0)" /><span>&nbsp;Google로 로그인</span></button
+	>
 {/snippet}
 
 {#snippet UserProfile(user: User)}
@@ -25,13 +28,13 @@
 	</div>
 	<hr />
 	<button id="logout-btn" class="container" onclick={() => signOut()}
-		><LogOut size="1rem" color="red" /><span>&nbsp;로그아웃</span></button
+		><LogOut size="1rem" color="var(--color-primary-0)" /><span>&nbsp;로그아웃</span></button
 	>
 {/snippet}
 
 <!-- <section class="container"> -->
 <section class="module">
-	{#if user === null}
+	{#if user.email === null}
 		{@render GuestProfile()}
 	{:else}
 		{@render UserProfile(user)}
