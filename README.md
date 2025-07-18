@@ -1,1 +1,1 @@
-# NemoWiki SvelteKit Template
+# Boardgame Wiki

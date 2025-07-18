@@ -3,6 +3,7 @@
 	import type { DocLog } from '@nemowiki/core/types';
 	import { page } from '$app/state';
 	import { parseTimeOnly } from '$lib/wiki/utils/general.js';
+	import { PUBLIC_REQUIRE_LOGIN } from '$env/static/public';
 
 	let recentChangedLogs: DocLog[] = $derived.by(() => {
 		return removeDeletedOrHidden(removeDuplication(JSON.parse(page.data.logs)));
@@ -39,13 +40,17 @@
 {/snippet}
 
 <section class="module">
-	<h3>수정된 문서</h3>
+	<h2>수정된 문서</h2>
 	<hr />
-	{#each recentChangedLogs as log, i (i)}
-		{#if i <= 10}
-			{@render RecentLog(log)}
-		{/if}
-	{/each}
+	{#if PUBLIC_REQUIRE_LOGIN === 'true'}
+		<p>로그인 필요</p>
+	{:else}
+		{#each recentChangedLogs as log, i (i)}
+			{#if i <= 10}
+				{@render RecentLog(log)}
+			{/if}
+		{/each}
+	{/if}
 </section>
 
 <style lang="scss">

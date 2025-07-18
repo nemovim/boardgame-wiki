@@ -4,6 +4,7 @@ import { createDocByFullTitle, editDocByFullTitle } from '@nemowiki/core';
 import { encodeFullTitle } from '@nemowiki/core/client';
 import type { Actions } from '@sveltejs/kit';
 import { fail, redirect } from '@sveltejs/kit';
+import modifyHtmlByExistenceOfLinks from '$lib/wiki/utils/modifyHtml.js';
 
 export const writeActions = {
 	save: async ({ request, locals, params }) => {
@@ -29,9 +30,14 @@ export const writeActions = {
 		if (res.ok) redirect(303, `/r/${encodeFullTitle(fullTitle)}`);
 		else return fail(400, { message: res.reason });
 	},
-	preview: async ({ request }) => {
+	preview: async ({ request, locals }) => {
 		const data = await request.formData();
 		const doc = JSON.parse((data.get('doc') || '').toString());
-		return await previewDoc(doc);
+		const res_html = await previewDoc(doc);
+		if (!res_html.ok) return res_html;
+		return {
+			ok: true,
+			value: modifyHtmlByExistenceOfLinks(res_html.value, locals.fullTitles)
+		};
 	}
 } satisfies Actions;

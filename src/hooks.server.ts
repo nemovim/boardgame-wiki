@@ -1,18 +1,21 @@
 import * as Sentry from '@sentry/sveltekit';
 import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
-
 import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { WIKI_MONGO_URI, AWS_BUCKET_NAME, AWS_ID, AWS_SECRET } from '$env/static/private';
+import { PUBLIC_REQUIRE_LOGIN } from '$env/static/public';
 
 import { handle as authenticationHandle } from './auth.js';
+
 import {
 	activateWiki,
 	backupWiki,
 	getUserByEmail,
 	// signinUserByEmail,
-	signupUserByEmailAndName
+	signupUserByEmailAndName,
+	// getRecentWriteLogs,
+	getAllFullTitles
 } from '@nemowiki/core';
 
 import type { User } from '@nemowiki/core/types';
@@ -23,7 +26,47 @@ Sentry.init({
 	tracesSampleRate: 1
 });
 
-export const init: ServerInit = async () => {
+// let logs: DocLog[] = [];
+let fullTitles: string[] = [];
+
+const ttl_backup = 1000 * 60 * 60 * 24 * 7; // 7일
+let last_backup = Date.now();
+const ttl_refresh = 1000 * 60 * 5; // 5분
+let last_refresh = 0;
+
+async function checkTTL() {
+	const now = Date.now();
+
+	if (now - last_backup > ttl_backup) {
+		await backupWiki();
+		last_backup = now;
+	}
+
+	if (now - last_refresh > ttl_refresh) {
+		fullTitles = await getAllFullTitles();
+		last_refresh = now;
+	}
+}
+
+async function getUser(email: string | null) {
+	if (!email) return { email: null, name: null, group: 'guest', contribCnt: 0 };
+
+	let user: User | null = await getUserByEmail(email);
+	if (user === null) {
+		const res = await signupUserByEmailAndName(email, email.split('@')[0]);
+		if (!res.ok) throw new Error(res.reason);
+		user = res.value as User;
+	}
+	return user;
+}
+
+function checkEnv() {
+	if (PUBLIC_REQUIRE_LOGIN === undefined) {
+		throw new Error('Please set "PUBLIC_REQUIRE_LOGIN" in the .env file!');
+	}
+	if (PUBLIC_REQUIRE_LOGIN !== 'true' && PUBLIC_REQUIRE_LOGIN !== 'false') {
+		throw new Error('"PUBLIC_REQUIRE_LOGIN" must be "true" or "false"!');
+	}
 	if (WIKI_MONGO_URI === undefined) {
 		throw new Error('Please set "WIKI_MONGO_URI" in the .env file!');
 	}
@@ -36,16 +79,12 @@ export const init: ServerInit = async () => {
 	if (AWS_SECRET === undefined) {
 		throw new Error('Please set "AWS_SECRET" in the .env file!');
 	}
+}
+
+export const init: ServerInit = async () => {
+	checkEnv();
 
 	await activateWiki(WIKI_MONGO_URI, AWS_BUCKET_NAME, AWS_ID, AWS_SECRET);
-
-	// await backupWiki();
-	setInterval(
-		() => {
-			backupWiki();
-		},
-		1000 * 60 * 60 * 24 * 7
-	); // 7일
 
 	console.log('[Wiki Is Ready]');
 };
@@ -53,45 +92,46 @@ export const init: ServerInit = async () => {
 const authorizationHandle: Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 
-	// console.log(`url: ${event.url.pathname} | session: ${!!session?.user}`)
-	event.params.fullTitle = (event.params.fullTitle || '').trim();
-	event.params.userName = (event.params.userName || '').trim();
-	event.params.query = (event.params.query || '').trim();
+	if (session?.user?.email || PUBLIC_REQUIRE_LOGIN === 'false') {
+		// Authorized
+		if (event.url.pathname.startsWith('/signin') && session?.user?.email)
+			redirect(302, '/r/' + encodeFullTitle('위키:대문'));
 
-	if (!event.params.fullTitle && !event.params.userName && !event.params.query) {
-		if (!event.url.pathname.startsWith('/f')) redirect(302, '/r/' + encodeFullTitle('위키:대문'));
-	}
-
-	if (session?.user?.email) {
-		let user: User | null = await getUserByEmail(session.user.email);
-		if (user === null) {
-			const res = await signupUserByEmailAndName(
-				session.user.email,
-				session.user.email.split('@')[0]
-			);
-			if (!res.ok) throw new Error(res.reason);
-			user = res.value as User;
+		if (!event.params.fullTitle && !event.params.userName && !event.params.query) {
+			if (!event.url.pathname.startsWith('/signin') && !event.url.pathname.startsWith('/f'))
+				redirect(302, '/r/' + encodeFullTitle('위키:대문'));
 		}
 
-		event.locals.user = user;
+		event.params.fullTitle = (event.params.fullTitle || '').trim();
+		event.params.userName = (event.params.userName || '').trim();
+		event.params.query = (event.params.query || '').trim();
 
-		// console.log(user);
+		await checkTTL();
+
+		event.locals.user = await getUser(session?.user?.email || null);
+		// event.locals.logs = logs;
+		event.locals.fullTitles = fullTitles;
+
 		return await resolve(event);
 	} else {
 		// Unauthorized
-		const user = { email: null, name: null, group: 'guest', contribCnt: 0 };
-		event.locals.user = user;
-
-		// console.log(user);
-		return await resolve(event);
+		if (event.url.pathname.startsWith('/signin')) {
+			event.locals.fullTitles = [];
+			event.locals.user = await getUser(null);
+			return await resolve(event);
+		} else {
+			redirect(303, '/signin');
+		}
 	}
 };
 
 export const handleError: HandleServerError = Sentry.handleErrorWithSentry(
 	async ({ error, event }) => {
-		let fullTitle = event.params.fullTitle || event.url.pathname;
-		if (event.url.pathname.startsWith('/u')) fullTitle = '사용자:' + event.params.userName;
-		if (event.url.pathname.startsWith('/s')) fullTitle = '검색:' + event.params.query;
+		const fullTitle =
+			event.params.fullTitle ||
+			'사용자:' + event.params.userName ||
+			'검색:' + event.params.query ||
+			event.url.pathname;
 
 		return {
 			message: error instanceof Error ? error.message : '알 수 없는 에러',
@@ -100,7 +140,4 @@ export const handleError: HandleServerError = Sentry.handleErrorWithSentry(
 	}
 );
 
-export const handle = sequence(
-	Sentry.sentryHandle(),
-	sequence(authenticationHandle, authorizationHandle)
-);
+export const handle = sequence(Sentry.sentryHandle(), authenticationHandle, authorizationHandle);

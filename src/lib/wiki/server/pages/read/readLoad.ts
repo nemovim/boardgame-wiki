@@ -6,8 +6,7 @@ import type { WikiResponse } from '@nemowiki/core/types';
 export async function readLoad({
 	params,
 	locals,
-	url,
-	parent
+	url
 }: ServerLoadEvent): Promise<WikiResponse<{ doc: string; rev: number }>> {
 	const fullTitle = params.fullTitle;
 	if (!fullTitle)
@@ -22,10 +21,7 @@ export async function readLoad({
 	const res_read = await readDocByFullTitle(fullTitle, locals.user, rev);
 	if (!res_read.ok) return res_read;
 
-	res_read.value.html = modifyHtmlByExistenceOfLinks(
-		res_read.value.html || '',
-		JSON.parse((await parent()).fullTitles)
-	);
+	res_read.value.html = modifyHtmlByExistenceOfLinks(res_read.value.html || '', locals.fullTitles);
 
 	return {
 		ok: true,

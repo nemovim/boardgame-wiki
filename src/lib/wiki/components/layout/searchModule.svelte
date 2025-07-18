@@ -65,7 +65,7 @@
 
 {#snippet SearchButton()}
 	<button id="search-btn" class="container" onclick={() => search(searchWord)}>
-		<Search size="1.25rem" color="var(--color-primary-0)" />
+		<Search size="1.25rem" />
 	</button>
 {/snippet}
 
@@ -73,7 +73,7 @@
 	<button
 		onclick={() => readDoc(suggestion)}
 		class="suggestion-btn"
-		style="top: {(i + 1) * 2 + 0.5}rem"
+		style="top: {(i + 1) * 2.5}rem"
 	>
 		{suggestion}</button
 	>
