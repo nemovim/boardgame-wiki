@@ -73,7 +73,7 @@
 	<button
 		onclick={() => readDoc(suggestion)}
 		class="suggestion-btn"
-		style="top: {(i + 1) * 2.5}rem"
+		style="top: {(i + 1)*2 + 0.5}rem"
 	>
 		{suggestion}</button
 	>

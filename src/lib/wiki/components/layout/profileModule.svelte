@@ -14,7 +14,7 @@
 	<h2>비회원</h2>
 	<hr />
 	<button id="login-btn" class="container" onclick={() => goto('/signin')}
-		><LogIn size="1rem" color="green" /><span>&nbsp;로그인</span></button
+		><LogIn size="1rem" color="var(--color-primary-0)" /><span>&nbsp;로그인</span></button
 	>
 {/snippet}
 
@@ -29,7 +29,7 @@
 	</div>
 	<hr />
 	<button id="logout-btn" class="container" onclick={() => signOut()}
-		><LogOut size="1rem" color="red" /><span>&nbsp;로그아웃</span></button
+		><LogOut size="1rem" color="var(--color-primary-0)" /><span>&nbsp;로그아웃</span></button
 	>
 {/snippet}
 
