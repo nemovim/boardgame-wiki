@@ -33,7 +33,7 @@ export const writeActions = {
 	preview: async ({ request, locals }) => {
 		const data = await request.formData();
 		const doc = JSON.parse((data.get('doc') || '').toString());
-		const res_html = await previewDoc(doc);
+		const res_html = await previewDoc(doc, locals.user);
 		if (!res_html.ok) return res_html;
 		return {
 			ok: true,

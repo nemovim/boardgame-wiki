@@ -1,13 +1,16 @@
-import { readDocByFullTitle } from '@nemowiki/core';
-import modifyHtmlByExistenceOfLinks from '$lib/wiki/utils/modifyHtml.js';
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import { redirect, type ServerLoadEvent } from '@sveltejs/kit';
+
 import type { WikiResponse } from '@nemowiki/core/types';
+import { getRedirectFullTitleByMarkup, readDocByFullTitle } from '@nemowiki/core';
+import { encodeFullTitle } from '@nemowiki/core/client';
+
+import modifyHtmlByExistenceOfLinks from '$lib/wiki/utils/modifyHtml.js';
 
 export async function readLoad({
 	params,
 	locals,
 	url
-}: ServerLoadEvent): Promise<WikiResponse<{ doc: string; rev: number }>> {
+}: ServerLoadEvent): Promise<WikiResponse<{ doc: string }>> {
 	const fullTitle = params.fullTitle;
 	if (!fullTitle)
 		return {
@@ -15,19 +18,22 @@ export async function readLoad({
 			reason: 'fullTitle is undefined'
 		};
 
-	let rev = Number(url.searchParams.get('rev'));
-	if (rev === 0) rev = -1;
+	const rev = Number(url.searchParams.get('rev')||'-1');
 
 	const res_read = await readDocByFullTitle(fullTitle, locals.user, rev);
 	if (!res_read.ok) return res_read;
+
+	const doRedirect = url.searchParams.get('redirect');
+	const redirectFullTitle = getRedirectFullTitleByMarkup(res_read.value.markup || '');
+
+	if (redirectFullTitle && doRedirect !== 'no' && rev === -1) {
+		redirect(303, `/r/${encodeFullTitle(redirectFullTitle)}?from=${encodeFullTitle(fullTitle)}`);
+	}
 
 	res_read.value.html = modifyHtmlByExistenceOfLinks(res_read.value.html || '', locals.fullTitles);
 
 	return {
 		ok: true,
-		value: {
-			rev,
-			doc: JSON.stringify(res_read.value)
-		}
+		value: { doc: JSON.stringify(res_read.value) }
 	};
 }

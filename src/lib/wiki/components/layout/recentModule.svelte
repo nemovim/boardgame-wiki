@@ -42,7 +42,7 @@
 <section class="module">
 	<h2>수정된 문서</h2>
 	<hr />
-	{#if PUBLIC_REQUIRE_LOGIN === 'true'}
+	{#if page.data.user?.email === null && PUBLIC_REQUIRE_LOGIN === 'true'}
 		<p>로그인 필요</p>
 	{:else}
 		{#each recentChangedLogs as log, i (i)}
